@@ -3,17 +3,6 @@
 **TV KILL** is a mobile application for Android that enables you to turn off TVs, using your device's built-in IR-blaster.  
 The app basically transmits a variety of off-patterns for different TVs successively, which will cause most TVs to power down.
 
-**TV KILL** is available on Google Play and F-Droid  
-<a href='https://play.google.com/store/apps/details?id=com.redirectapps.tvkill&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height="80"/></a>
-<a href="https://f-droid.org/app/com.redirectapps.tvkill">
-    <img src="https://f-droid.org/badge/get-it-on.png"
-         alt="Get it on F-Droid" height="80">
-</a>
-
-## Feedback
-If you have any suggestions or questions regarding our app, feel free to contact us!  
-contact.redirectapps@gmail.com
-
 You may also use the issues-page to submit bug reports and feature requests:  
 https://github.com/42SK/TVKILL/issues
 ## Contributing
@@ -22,7 +11,6 @@ If you can determine the off-pattern for a TV that is not yet supported, it woul
 You can find a detailed explanation on how to add patterns to the application on [this wiki page](https://github.com/42SK/TVKILL/wiki/How-to-add-IR-patterns-to-TV-KILL).
 ### Translate
 Help us to translate **TV KILL** by creating a new [strings.xml file](https://github.com/42SK/TVKILL/blob/master/app/src/main/res/values/strings.xml) for your language.  
-We'd also appreciate any translation suggestions for [the app's description on Google Play](https://play.google.com/store/apps/details?id=com.redirectapps.tvkill).
 
 Take a short look at our [contributing guidelines](https://github.com/42SK/TVKILL/blob/master/CONTRIBUTING.md) before opening a pull request.
 
