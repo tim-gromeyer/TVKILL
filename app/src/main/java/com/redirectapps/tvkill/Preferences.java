@@ -17,6 +17,8 @@
  */
 package com.redirectapps.tvkill;
 
+import static android.preference.PreferenceManager.getDefaultSharedPreferences;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,20 +30,14 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
-import android.support.v4.provider.DocumentFile;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-
+import androidx.documentfile.provider.DocumentFile;
 import java.io.IOException;
 import java.io.InputStream;
-
 import kotlin.text.Charsets;
-
-import static android.preference.PreferenceManager.getDefaultSharedPreferences;
-
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class Preferences extends PreferenceActivity {
 
@@ -49,7 +45,8 @@ public class Preferences extends PreferenceActivity {
     private final String LAST_OPENED_URI_KEY = "last_opened_key";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
@@ -77,7 +74,8 @@ public class Preferences extends PreferenceActivity {
         Uri finalDocumentUri = documentUri;
         filePicker.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
-            public boolean onPreferenceClick(Preference preference) {
+            public boolean onPreferenceClick(Preference preference)
+            {
                 // Intent to start openIntents File Manager
                 /* ACTION_OPEN_DOCUMENT is needed (contrary to ACTION_GET_CONTENT) because we need
                  * long-term, persistent permission on the uri, not a one-time thing.
@@ -115,15 +113,16 @@ public class Preferences extends PreferenceActivity {
         // Monitor changes in custom database checkbox
         customDbCheckbox.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                Boolean state = (Boolean) newValue;
+            public boolean onPreferenceChange(Preference preference, Object newValue)
+            {
+                Boolean state = (Boolean)newValue;
                 // Switch filepicker status according to the status of its checkbox
                 filePicker.setEnabled(state);
 
                 // DB previously selected or uncheck = restart the app/BrandContainer singleton
                 // PS: There is no validity test on this file, this is useless since BrandContainer
                 // will reset checkbox and file fields if it encounters a loading problem.
-                if(!state || sharedPreferences.getString(LAST_OPENED_URI_KEY, null) != null) {
+                if (!state || sharedPreferences.getString(LAST_OPENED_URI_KEY, null) != null) {
                     // Set pref manually before restart
                     sharedPreferences.edit().putBoolean("custom_pattern_db_checkbox", state).apply();
                     MainActivity.restart();
@@ -134,7 +133,8 @@ public class Preferences extends PreferenceActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent resultData)
+    {
         super.onActivityResult(requestCode, resultCode, resultData);
 
         if (requestCode == OPEN_DOCUMENT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
@@ -168,15 +168,11 @@ public class Preferences extends PreferenceActivity {
 
             // Persist the permission across restarts to allow us to reopen the document
             getContentResolver().takePersistableUriPermission(
-                    documentUri,
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION
-            );
+                documentUri,
+                Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
             // Persist the Uri in preferences
-            getDefaultSharedPreferences(MainActivity.getContext()).edit().putString(
-                    LAST_OPENED_URI_KEY,
-                    documentUri.toString()
-            ).apply();
+            getDefaultSharedPreferences(MainActivity.getContext()).edit().putString(LAST_OPENED_URI_KEY, documentUri.toString()).apply();
 
             this.findPreference("pattern_db_file").setSummary(filename);
 
@@ -186,13 +182,16 @@ public class Preferences extends PreferenceActivity {
     }
 
     // Return the name of the file for a given uri
-    public String getFileName(Uri uri) {
+    public String getFileName(Uri uri)
+    {
         String result = null;
         if (uri.getScheme().equals("content")) {
-            // projection: Optional but bad for performance if empty
-            try (Cursor cursor = getContentResolver().query(uri, new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null)) {
+            try (Cursor cursor = getContentResolver().query(uri, new String[] { OpenableColumns.DISPLAY_NAME }, null, null, null)) {
                 if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                    int columnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                    if (columnIndex >= 0) {
+                        result = cursor.getString(columnIndex);
+                    }
                 }
             }
         }

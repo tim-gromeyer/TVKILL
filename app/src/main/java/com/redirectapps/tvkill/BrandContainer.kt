@@ -62,38 +62,36 @@ object BrandContainer {
     fun loadJSONFromAsset(): String? {
         val jsonData: String? = try {
             val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.getContext())
-            var stream: InputStream
+            var stream: InputStream? = null // Declare as nullable
             // Reload user's custom DB file
             if (sharedPreferences.getBoolean("custom_pattern_db_checkbox", false) && sharedPreferences.contains(LAST_OPENED_URI_KEY)) {
                 try {
                     val documentUri = Uri.parse(sharedPreferences.getString(LAST_OPENED_URI_KEY, null))
                     stream = MainActivity.getContext().contentResolver.openInputStream(documentUri)
-                    if (stream == null)
-                        throw FileNotFoundException()
+                    if (stream == null) throw FileNotFoundException()
                 } catch (e: Exception) {
-                    e.printStackTrace();
+                    e.printStackTrace()
                     when (e) {
-                        // An error occurred: reset related preferences and load default DB
                         is IllegalArgumentException, is SecurityException, is FileNotFoundException, is NullPointerException -> {
-                            // Reset Uri in prefs
                             sharedPreferences.edit().remove(LAST_OPENED_URI_KEY).apply()
-                            // Disable custom DB in prefs
                             sharedPreferences.edit().putBoolean("custom_pattern_db_checkbox", false).apply()
-                            // Fallback
                             stream = MainActivity.getContext().getAssets().open("brand_patterns.json")
                         }
                         else -> throw e
                     }
                 }
             } else {
-                // Load default DB
                 stream = MainActivity.getContext().getAssets().open("brand_patterns.json")
             }
-            val size = stream.available()
-            val buffer = ByteArray(size)
-            stream.read(buffer)
-            stream.close()
-            String(buffer, Charsets.UTF_8)
+
+            // Use stream with null safety
+            stream?.let {
+                val size = it.available()
+                val buffer = ByteArray(size)
+                it.read(buffer)
+                it.close()
+                String(buffer, Charsets.UTF_8)
+            }
         } catch (ex: IOException) {
             ex.printStackTrace()
             return null
@@ -114,41 +112,9 @@ object BrandContainer {
         return Pattern(frequency, numbers)
     }
 
-<<<<<<< HEAD
     // Load Brands and their patterns from JSON asset
     @JvmStatic
     val allBrands: Array<Brand> by lazy {
-=======
-    private val tcl = Brand(
-            "tcl",
-            arrayOf(
-                    Pattern(intArrayOf(
-                            3635, 1, 1, 338, 152, 38, 15, 45, 15, 45, 15, 15, 15, 15, 15, 15, 15, 45, 15, 15,
-                            15, 15, 15, 45, 15, 45, 15, 15, 15, 45, 15, 15, 15, 15, 15, 45, 15, 45, 15, 15,
-                            15, 45, 15, 45, 15, 15, 15, 15, 15, 45, 15, 15, 15, 15, 15, 45, 15, 15, 15, 15,
-                            15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 45, 15, 45, 15,
-                            15, 15, 45, 15, 15, 15, 15, 15, 15, 15, 45, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-                            15, 15, 15, 45, 15, 45, 15, 45, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-                            15, 45, 15, 15, 15, 45, 15, 15, 15, 45, 15, 15, 15, 15, 15, 45, 15, 45, 15, 15,
-                            15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 45, 15, 15, 15, 45,
-                            15, 15, 15, 45, 15, 15, 15, 15, 15, 45, 15, 45, 15, 15, 15, 15, 15, 15, 15, 15,
-                            15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-                            15, 15, 15, 15, 15, 45, 15, 15, 15, 15, 15, 15, 15, 15, 45, 1911
-                    )
-            )),
-
-                    //Mute-pattern
-            Pattern(intArrayOf(38343, 1, 1, 343, 172, 21, 22, 21, 22, 21, 22, 21, 22, 21, 22, 21, 22, 21, 22, 21, 22, 21, 65, 21, 22, 21, 65, 21, 65, 21, 65, 21, 65, 21, 22, 21, 65, 21, 22, 21, 22, 21, 65, 21, 22, 21, 22, 21, 22, 21, 22, 21, 22, 21, 65, 21, 65, 21, 22, 21, 65, 21, 65, 21, 65, 21, 65, 21, 65, 21, 4907))
-    )
-
-
-
-
-
-    @JvmStatic
-    val allBrands = arrayOf(samsung, sony, lg, panasonic, philips, nec, sharp, jvc, toshiba, mitsubishi, vizio, rca, pioneer, hisense, akai, aoc, tcl)
->>>>>>> pr-1
-
         val jsonData = loadJSONFromAsset()  // PS: can be null if file is not found...
         val brands = ArrayList<Brand>()
         val jsonBrands = JSONArray(jsonData)
