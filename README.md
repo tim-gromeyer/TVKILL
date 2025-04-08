@@ -1,3 +1,6 @@
+# Deprecated! Use the new [TV-Killer](https://github.com/tim-gromeyer/TV-Killer) app instead! It supports more TV's, internal/external ir blaster, and more android versions!
+
+
 # TV KILL - Universal IR-Remote
 
 **TV KILL** is a mobile application for Android that enables you to turn off TVs, using your device's built-in IR-blaster.  
